@@ -52,12 +52,13 @@ function removeBookFromHTML() {
 
 if (storageAvailable('localStorage')) {
   dataFromStorage = JSON.parse(localStorage.getItem('BooksDataItem'));
-  dataFromStorage.forEach((book) => {
-    addBooktoHTML(book.title, book.author);
-    removeBookFromHTML();
-  });
+  
   if (dataFromStorage !== null) {
     books = dataFromStorage;
+    dataFromStorage.forEach((book) => {
+        addBooktoHTML(book.title, book.author);
+        removeBookFromHTML();
+      });
   }
 } else {
   dataFromStorage = [];
