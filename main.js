@@ -37,7 +37,7 @@ function addBooktoHTML(title, author) {
         <hr>
     `;
   booksContainer.appendChild(bookHTML);
-  console.log(books, localStorage.BooksDataItem)
+  console.log(books, localStorage.BooksDataItem);
 }
 
 function removeBookFromHTML() {
@@ -54,13 +54,13 @@ function removeBookFromHTML() {
 
 if (storageAvailable('localStorage')) {
   dataFromStorage = JSON.parse(localStorage.getItem('BooksDataItem'));
-  
+
   if (dataFromStorage !== null) {
     books = dataFromStorage;
     dataFromStorage.forEach((book) => {
-        addBooktoHTML(book.title, book.author);
-        removeBookFromHTML();
-      });
+      addBooktoHTML(book.title, book.author);
+      removeBookFromHTML();
+    });
   }
 } else {
   dataFromStorage = [];
