@@ -37,6 +37,7 @@ function addBooktoHTML(title, author) {
         <hr>
     `;
   booksContainer.appendChild(bookHTML);
+  console.log(books, localStorage.BooksDataItem)
 }
 
 function removeBookFromHTML() {
@@ -46,6 +47,7 @@ function removeBookFromHTML() {
       booksContainer.removeChild(btn.parentElement);
       books = books.filter((book, index) => index !== removeButtons.indexOf(btn));
       localStorage.setItem('BooksDataItem', JSON.stringify(books));
+      removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
     });
   });
 }
