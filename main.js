@@ -37,7 +37,6 @@ function addBooktoHTML(title, author) {
         <hr>
     `;
   booksContainer.appendChild(bookHTML);
-  console.log(books, localStorage.BooksDataItem);
 }
 
 function removeBookFromHTML() {
