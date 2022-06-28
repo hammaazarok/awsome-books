@@ -99,3 +99,34 @@ addButton.addEventListener('click', () => {
     awesomeBooks.removeBookFromHTML();
   }
 });
+
+const date = document.querySelector('.date');
+date.innerHTML = new Date();
+
+const bookList = document.querySelector('.list');
+const addBook = document.querySelector('.add');
+const contactInfo = document.querySelector('.contact');
+
+const navLink = document.querySelectorAll('.nav-link');
+navLink.forEach((n, index) => n.addEventListener('click', () => {
+  navLink.forEach((link, number) => {
+    if (index === number) {
+      link.classList.add('bgcolor');
+    } else {
+      link.classList.remove('bgcolor');
+    }
+  });
+  if (index === 0) {
+    bookList.classList.remove('hide');
+    addBook.classList.add('hide');
+    contactInfo.classList.add('hide');
+  } else if (index === 1) {
+    bookList.classList.add('hide');
+    addBook.classList.remove('hide');
+    contactInfo.classList.add('hide');
+  } else {
+    bookList.classList.add('hide');
+    addBook.classList.add('hide');
+    contactInfo.classList.remove('hide');
+  }
+}));
