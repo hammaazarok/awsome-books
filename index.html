@@ -8,13 +8,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <h1>Awsome Books</h1>
-  <div id="books-container" class="books-container">
+  <header>
+    <h2>Awesome Books</h2>
+    <ul>
+      <li>List</li>
+      <li>Add new</li>
+      <li>Contact</li>
+    </ul>
+  </header>
+
+  <div class="date-box">
+    <p class="date"></p>
   </div>
+
+  <div class="list">
+    <h1 class="title">Awsome Books</h1>
+    <div id="books-container" class="books-container"></div>
+  </div>
+   
   
-  <div>
+  <div class="add">
     <hr>
-    <h2>Add a new Book</h2>
+    <h1 class="title">Add a new Book</h1>
     <form class="add-form" action="#">
         <input id="title" type="text" name="title" placeholder="Title">
         <input id="author" type="text" name="author" placeholder="Author">
@@ -22,6 +37,9 @@
     </form>    
   </div>
  
+  <footer>
+    <p class="copyright-text">Copyright</p>
+  </footer>
   <script src="main.js"></script>
 </body>
 </html>

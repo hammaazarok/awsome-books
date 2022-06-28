@@ -99,3 +99,6 @@ addButton.addEventListener('click', () => {
     awesomeBooks.removeBookFromHTML();
   }
 });
+
+const date =  document.querySelector('.date')
+date.innerHTML = new Date()
