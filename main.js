@@ -1,24 +1,27 @@
-let books = [];
+class StorageAvailable {
+  constructor(type) {
+    this.type = type;
+    this.storage = window[this.type];
+  }
 
-function storageAvailable(type) {
-  let storage;
-  try {
-    storage = window[type];
+  try() {
     const x = '__storage_test__';
-    storage.setItem(x, x);
-    storage.removeItem(x);
+    this.storage.setItem(x, x);
+    this.storage.removeItem(x);
     return true;
-  } catch (e) {
+  }
+
+  catch(e) {
     return e instanceof DOMException && (
       e.code === 22
 
-              || e.code === 1014
+      || e.code === 1014
 
-              || e.name === 'QuotaExceededError'
+      || e.name === 'QuotaExceededError'
 
-              || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+      || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')
 
-              && (storage && storage.length !== 0);
+      && (this.storage && this.storage.length !== 0);
   }
 }
 const addButton = document.querySelector('.add-btn');
@@ -26,49 +29,62 @@ const title = document.getElementById('title');
 const author = document.getElementById('author');
 const booksContainer = document.getElementById('books-container');
 let removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
-let dataFromStorage = [];
 
-function addBooktoHTML(title, author) {
-  const bookHTML = document.createElement('div');
-  bookHTML.innerHTML = `
-        <p class="title">${title}</p>
-        <p class="author">${author}</p>
-        <button class="remove-btn">remove</button>
-        <hr>
-    `;
-  booksContainer.appendChild(bookHTML);
-}
+class AwesomeBooks {
+  constructor() {
+    this.books = [];
+    this.dataFromStorage = [];
+  }
 
-function removeBookFromHTML() {
-  removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
-  removeButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      booksContainer.removeChild(btn.parentElement);
-      books = books.filter((book, index) => index !== removeButtons.indexOf(btn));
-      localStorage.setItem('BooksDataItem', JSON.stringify(books));
-      removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
+  addBooktoHTML(title, author, id) {
+    const bookHTML = document.createElement('div');
+    bookHTML.classList.add('book');
+    if (id % 2 === 0) {
+      bookHTML.classList.add('gray');
+    }
+    bookHTML.innerHTML = `
+          <p class="title">"${title}" By</p>
+          <p class="author">${author}</p>
+          <button class="remove-btn">remove</button>
+      `;
+    booksContainer.appendChild(bookHTML);
+  }
+
+  removeBookFromHTML() {
+    removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
+    removeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        booksContainer.removeChild(btn.parentElement);
+        this.books = this.books.filter((book, index) => index !== removeButtons.indexOf(btn));
+        localStorage.setItem('BooksDataItem', JSON.stringify(this.books));
+        removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
+      });
     });
-  });
+  }
 }
 
-if (storageAvailable('localStorage')) {
-  dataFromStorage = JSON.parse(localStorage.getItem('BooksDataItem'));
+const awesomeBooks = new AwesomeBooks();
 
-  if (dataFromStorage !== null) {
-    books = dataFromStorage;
-    dataFromStorage.forEach((book) => {
-      addBooktoHTML(book.title, book.author);
-      removeBookFromHTML();
+if (new StorageAvailable('localStorage')) {
+  awesomeBooks.dataFromStorage = JSON.parse(localStorage.getItem('BooksDataItem'));
+
+  if (awesomeBooks.dataFromStorage !== null) {
+    awesomeBooks.books = awesomeBooks.dataFromStorage;
+    awesomeBooks.dataFromStorage.forEach((book, index) => {
+      awesomeBooks.addBooktoHTML(book.title, book.author, index);
+      awesomeBooks.removeBookFromHTML();
     });
   }
 } else {
-  dataFromStorage = [];
-  books = dataFromStorage;
+  awesomeBooks.dataFromStorage = [];
+  awesomeBooks.books = awesomeBooks.dataFromStorage;
 }
 
-function Book(title, author) {
-  this.title = title;
-  this.author = author;
+class Book {
+  constructor(title, author) {
+    this.title = title;
+    this.author = author;
+  }
 }
 
 addButton.addEventListener('click', () => {
@@ -76,10 +92,10 @@ addButton.addEventListener('click', () => {
   const authorInputValue = author.value;
   if (titleInputValue !== '' && authorInputValue !== '') {
     const newBook = new Book(titleInputValue, authorInputValue);
-    books.push(newBook);
-
-    addBooktoHTML(titleInputValue, authorInputValue);
-    localStorage.setItem('BooksDataItem', JSON.stringify(books));
-    removeBookFromHTML();
+    awesomeBooks.books.push(newBook);
+    const index = awesomeBooks.books.length - 1;
+    awesomeBooks.addBooktoHTML(titleInputValue, authorInputValue, index);
+    localStorage.setItem('BooksDataItem', JSON.stringify(awesomeBooks.books));
+    awesomeBooks.removeBookFromHTML();
   }
 });
