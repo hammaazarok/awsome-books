@@ -1,9 +1,11 @@
-let books = [];
+class StorageAvailable {
+  constructor (type) {
+    this.type = type
+  }
 
-function storageAvailable(type) {
-  let storage;
-  try {
-    storage = window[type];
+  try() {
+    let storage;
+    storage = window[this.type];
     const x = '__storage_test__';
     storage.setItem(x, x);
     storage.removeItem(x);
@@ -26,49 +28,59 @@ const title = document.getElementById('title');
 const author = document.getElementById('author');
 const booksContainer = document.getElementById('books-container');
 let removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
-let dataFromStorage = [];
 
-function addBooktoHTML(title, author) {
-  const bookHTML = document.createElement('div');
-  bookHTML.innerHTML = `
-        <p class="title">${title}</p>
-        <p class="author">${author}</p>
-        <button class="remove-btn">remove</button>
-        <hr>
-    `;
-  booksContainer.appendChild(bookHTML);
-}
+class AwesomeBooks {
+  constructor(books, dataFromStorage) {
+    this.books = []
+    this.dataFromStorage = []
+  }
 
-function removeBookFromHTML() {
-  removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
-  removeButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      booksContainer.removeChild(btn.parentElement);
-      books = books.filter((book, index) => index !== removeButtons.indexOf(btn));
-      localStorage.setItem('BooksDataItem', JSON.stringify(books));
-      removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
+  addBooktoHTML(title, author) {
+    const bookHTML = document.createElement('div');
+    bookHTML.innerHTML = `
+          <p class="title">${title}</p>
+          <p class="author">${author}</p>
+          <button class="remove-btn">remove</button>
+          <hr>
+      `;
+    booksContainer.appendChild(bookHTML);
+  }
+
+  removeBookFromHTML() {
+    removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
+    removeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        booksContainer.removeChild(btn.parentElement);
+        this.books = this.books.filter((book, index) => index !== removeButtons.indexOf(btn));
+        localStorage.setItem('BooksDataItem', JSON.stringify(this.books));
+        removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
+      });
     });
-  });
+  }
 }
 
-if (storageAvailable('localStorage')) {
-  dataFromStorage = JSON.parse(localStorage.getItem('BooksDataItem'));
+let awesomeBooks = new AwesomeBooks()
 
-  if (dataFromStorage !== null) {
-    books = dataFromStorage;
-    dataFromStorage.forEach((book) => {
-      addBooktoHTML(book.title, book.author);
-      removeBookFromHTML();
+if (new StorageAvailable('localStorage')) {
+  awesomeBooks.dataFromStorage = JSON.parse(localStorage.getItem('BooksDataItem'));
+
+  if ( awesomeBooks.dataFromStorage !== null) {
+    awesomeBooks.books =  awesomeBooks.dataFromStorage;
+    awesomeBooks.dataFromStorage.forEach((book) => {
+     awesomeBooks.addBooktoHTML(book.title, book.author);
+     awesomeBooks.removeBookFromHTML();
     });
   }
 } else {
-  dataFromStorage = [];
-  books = dataFromStorage;
+   awesomeBooks.dataFromStorage = [];
+   awesomeBooks.books =  awesomeBooks.dataFromStorage;
 }
 
-function Book(title, author) {
-  this.title = title;
-  this.author = author;
+class Book {
+  constructor (title,author) {
+    this.title = title;
+    this.author = author;
+  }
 }
 
 addButton.addEventListener('click', () => {
@@ -76,10 +88,10 @@ addButton.addEventListener('click', () => {
   const authorInputValue = author.value;
   if (titleInputValue !== '' && authorInputValue !== '') {
     const newBook = new Book(titleInputValue, authorInputValue);
-    books.push(newBook);
+    awesomeBooks.books.push(newBook);
 
-    addBooktoHTML(titleInputValue, authorInputValue);
-    localStorage.setItem('BooksDataItem', JSON.stringify(books));
-    removeBookFromHTML();
+    awesomeBooks.addBooktoHTML(titleInputValue, authorInputValue);
+    localStorage.setItem('BooksDataItem', JSON.stringify(awesomeBooks.books));
+    awesomeBooks.removeBookFromHTML();
   }
 });
