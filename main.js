@@ -1,26 +1,27 @@
 class StorageAvailable {
-  constructor (type) {
-    this.type = type
+  constructor(type) {
+    this.type = type;
+    this.storage = window[this.type];
   }
 
   try() {
-    let storage;
-    storage = window[this.type];
     const x = '__storage_test__';
-    storage.setItem(x, x);
-    storage.removeItem(x);
+    this.storage.setItem(x, x);
+    this.storage.removeItem(x);
     return true;
-  } catch (e) {
+  }
+
+  catch(e) {
     return e instanceof DOMException && (
       e.code === 22
 
-              || e.code === 1014
+      || e.code === 1014
 
-              || e.name === 'QuotaExceededError'
+      || e.name === 'QuotaExceededError'
 
-              || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+      || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')
 
-              && (storage && storage.length !== 0);
+      && (this.storage && this.storage.length !== 0);
   }
 }
 const addButton = document.querySelector('.add-btn');
@@ -30,18 +31,21 @@ const booksContainer = document.getElementById('books-container');
 let removeButtons = Array.from(document.querySelectorAll('.remove-btn'));
 
 class AwesomeBooks {
-  constructor(books, dataFromStorage) {
-    this.books = []
-    this.dataFromStorage = []
+  constructor() {
+    this.books = [];
+    this.dataFromStorage = [];
   }
 
-  addBooktoHTML(title, author) {
+  addBooktoHTML(title, author, id) {
     const bookHTML = document.createElement('div');
+    bookHTML.classList.add('book');
+    if (id % 2 === 0) {
+      bookHTML.classList.add('gray');
+    }
     bookHTML.innerHTML = `
-          <p class="title">${title}</p>
+          <p class="title">"${title}" By</p>
           <p class="author">${author}</p>
           <button class="remove-btn">remove</button>
-          <hr>
       `;
     booksContainer.appendChild(bookHTML);
   }
@@ -59,25 +63,25 @@ class AwesomeBooks {
   }
 }
 
-let awesomeBooks = new AwesomeBooks()
+const awesomeBooks = new AwesomeBooks();
 
 if (new StorageAvailable('localStorage')) {
   awesomeBooks.dataFromStorage = JSON.parse(localStorage.getItem('BooksDataItem'));
 
-  if ( awesomeBooks.dataFromStorage !== null) {
-    awesomeBooks.books =  awesomeBooks.dataFromStorage;
-    awesomeBooks.dataFromStorage.forEach((book) => {
-     awesomeBooks.addBooktoHTML(book.title, book.author);
-     awesomeBooks.removeBookFromHTML();
+  if (awesomeBooks.dataFromStorage !== null) {
+    awesomeBooks.books = awesomeBooks.dataFromStorage;
+    awesomeBooks.dataFromStorage.forEach((book, index) => {
+      awesomeBooks.addBooktoHTML(book.title, book.author, index);
+      awesomeBooks.removeBookFromHTML();
     });
   }
 } else {
-   awesomeBooks.dataFromStorage = [];
-   awesomeBooks.books =  awesomeBooks.dataFromStorage;
+  awesomeBooks.dataFromStorage = [];
+  awesomeBooks.books = awesomeBooks.dataFromStorage;
 }
 
 class Book {
-  constructor (title,author) {
+  constructor(title, author) {
     this.title = title;
     this.author = author;
   }
@@ -89,8 +93,8 @@ addButton.addEventListener('click', () => {
   if (titleInputValue !== '' && authorInputValue !== '') {
     const newBook = new Book(titleInputValue, authorInputValue);
     awesomeBooks.books.push(newBook);
-
-    awesomeBooks.addBooktoHTML(titleInputValue, authorInputValue);
+    const index = awesomeBooks.books.length - 1;
+    awesomeBooks.addBooktoHTML(titleInputValue, authorInputValue, index);
     localStorage.setItem('BooksDataItem', JSON.stringify(awesomeBooks.books));
     awesomeBooks.removeBookFromHTML();
   }

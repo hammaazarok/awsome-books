@@ -1,3 +1,45 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.books-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #000;
+  width: 500px;
+  max-width: 500px;
+  margin-bottom: 12px;
+}
+
+.book {
+  display: flex;
+  padding: 0 5px;
+}
+
+.author {
+  margin-right: auto;
+  margin-left: 5px;
+}
+
+.gray {
+  background-color: #d4d1d1;
+}
+
+.remove-btn {
+  height: 40px;
+  margin: 10px 0;
+  background-color: #fff;
+}
+
+.add-btn {
+  width: 50px;
+  margin-left: auto;
+  background-color: #fff;
+}
+
 .add-form {
   display: flex;
   flex-direction: column;
